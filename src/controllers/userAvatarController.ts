@@ -5,6 +5,7 @@ import {AppDataSource} from "../data-source";
 
 export const uploadUserAvatar = async (req: Request<{ userId: string }>, res: Response) => {
     const {userId} = req.params;
+    console.log("userId:", userId);
 
     if (!userId) {
         res.status(400).json({ message: 'userId is required' });
@@ -16,7 +17,10 @@ export const uploadUserAvatar = async (req: Request<{ userId: string }>, res: Re
         return
     }
 
+    console.log("req.file:", req.file);
+
     const avatarPath = `/uploads/user_avatars/${req.file.filename}`;
+    console.log("avatarPath:", avatarPath);
 
     try {
         const userRepo = await AppDataSource.getRepository(Users);

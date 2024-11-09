@@ -55,7 +55,7 @@ app.use(application)
 app.use(job);
 app.use(resume)
 app.use('/api/uploads', avatar);
-app.use('/api/uploads', express.static('uploads'));
+app.use('/api/uploads', express.static('src/uploads'));
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
