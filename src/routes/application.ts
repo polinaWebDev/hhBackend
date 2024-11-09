@@ -8,13 +8,13 @@ import {Status} from "../status";
 
 const router = express.Router();
 
-router.post("/application/:jobId", checkAuth, async (req:any, res) => {
-    const userId = req.user.id
-    const { jobId } = req.params
+router.post("/application/:jobId", checkAuth, async (req:any, res) => { //?
+    const userId = req.user!.id
+    const { jobId } = req.params //?
     const { coverLetter } = req.body;
 
     try {
-        const userRepository = AppDataSource.getRepository(Users);
+        const userRepository = AppDataSource.getRepository(Users); //? Repository
         const jobRepository = AppDataSource.getRepository(Job);
         const applicationRepository = AppDataSource.getRepository(Application);
 
@@ -37,7 +37,7 @@ router.post("/application/:jobId", checkAuth, async (req:any, res) => {
 
         const existingApplication = await applicationRepository.findOne({
             where: {
-                user: {id: userId},
+                user: {id: userId}, //?
                 job_id: jobId
             }
         })

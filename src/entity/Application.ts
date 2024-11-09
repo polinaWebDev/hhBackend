@@ -24,4 +24,4 @@ export class Application {
     @ManyToOne(() => Users, (user) => user.applications)
     user: Users;
 
-}
+} 

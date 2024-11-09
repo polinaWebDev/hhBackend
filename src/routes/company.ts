@@ -9,6 +9,7 @@ import {CompanyMember} from "../entity/CompanyMember";
 
 const router = express.Router();
 
+
 router.post('/company', checkAuth, async (req, res) => {
     const {name} = req.body;
     const userId = req.params.id;

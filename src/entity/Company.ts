@@ -13,8 +13,7 @@ export class Company {
     name: string
 
     @Column({nullable: true})
-    avatar_id: string
-
+    avatar: string
 
 
     @OneToMany(() => Job, (job) => job.company)

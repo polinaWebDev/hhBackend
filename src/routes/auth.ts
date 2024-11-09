@@ -40,7 +40,26 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
+    try {
+        const user = await userRepository.findOneBy({ email });
 
+        if (!user) {
+            res.status(400).send("Пользователь не существует");
+            return
+        }
+
+        if (!user.checkIfPasswordIsValid(password)) { //?
+            res.status(401).send("Users already exists");
+            return
+        }
+
+        const token = jwt.sign({ userId: user.id, email: user.email }, 'SECRET_KEY'); //?
+        res.json({token});
+        return
+    } catch (error) {
+        res.status(500).send("Users already exists");
+        return
+    }
 });
 
 

@@ -10,9 +10,10 @@ export const checkAuth = (req: Request, res: Response, next: NextFunction): void
     }
 
     try {
-        const decoded = jwt.verify(token, 'SECRET_KEY');
+        const decoded = jwt.verify(token, 'SECRET_KEY'); //?
         (req as any).user = decoded;
-        next();
+        console.log(decoded)
+        next(); //?
     } catch (err) {
         console.error('Ошибка проверки токена:', err);
         res.sendStatus(403).send('Access denied. Invalid token.');

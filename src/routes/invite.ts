@@ -25,7 +25,7 @@ router.post('/invite', checkAuth, async (req, res) => {
                 user: { id: inviterId },
                 role: UserRole.MANAGER,
             },
-            relations: ['company'],
+            relations: ['company'], //?
         });
 
         if (!inviterMembership) {
@@ -33,14 +33,14 @@ router.post('/invite', checkAuth, async (req, res) => {
             return
         }
 
-        const company = inviterMembership!.company
+        const company = inviterMembership!.company //?
 
         const existingMember = await companyMemberRepository.findOne({
             where: {id: userToInvite.id, company: company},
         });
 
         if (existingMember) {
-            res.status(409).send("Пользователь уже существует")
+            res.status(409).send("Пользователь уже существует") //?
         }
 
         const newCompanyMember = new CompanyMember();

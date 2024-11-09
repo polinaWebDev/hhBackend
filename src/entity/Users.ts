@@ -25,9 +25,8 @@ export class Users {
     @Column()
     name: string
 
-
-    @Column({nullable:true})
-    resume_id: string
+    @Column({nullable: true})
+    avatar: string
 
     @Column({
         type: "enum",
@@ -43,16 +42,11 @@ export class Users {
     @OneToMany(() => Application, (application) => application.user, {nullable:true})
     applications: Application[];
 
-    @OneToOne(() => Resume, (resume) => resume.user, {nullable:true})
-    resume: Resume;
+    @OneToMany(() => Resume, (resume) => resume.userId)
+    resumes: Resume[];
 
     @OneToMany(() => CompanyMember, (membership) => membership.user)
     memberships: CompanyMember[];
 
-
-
-
-
-    // Todo resumeid, avatarid
 }
 

@@ -1,16 +1,16 @@
-import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Users} from "./Users";
 
 
 @Entity()
 export class Resume {
-    @PrimaryGeneratedColumn()
-    resume_id: number;
+    @PrimaryGeneratedColumn('uuid')
+    resume_id: string;
 
     @Column()
     content: string
 
-    @OneToOne(() => Users, (user) => user.resume)
-    @JoinColumn()
-    user: Users
+    @ManyToOne(() => Users, (user) => user.resumes)
+    @JoinColumn({ name: 'userId'})
+    userId: Users;
 }
