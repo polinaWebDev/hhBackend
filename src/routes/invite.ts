@@ -4,45 +4,58 @@ import {AppDataSource} from "../data-source";
 import {CompanyMember} from "../entity/CompanyMember";
 import {Users} from "../entity/Users";
 import {UserRole} from "../Roles";
+import {In} from "typeorm";
 
 const router =  Router()
 
 router.post('/invite', checkAuth, async (req, res) => {
-    const inviterId = req.params.id
+    const inviterId = req.params.id; // ID пригласившего пользователя
+    const {userIdToInvite} = req.body; // ID приглашаемого пользователя
+
+    console.log("Request Body:", req.body);
+    console.log(userIdToInvite);
 
     try {
-        const companyMemberRepository = AppDataSource.getRepository(CompanyMember)
-        const userRepository = AppDataSource.getRepository(Users)
+        const companyMemberRepository = AppDataSource.getRepository(CompanyMember);
+        const userRepository = AppDataSource.getRepository(Users);
 
-        const userToInvite = await userRepository.findOne({where:{id:inviterId}});
+        // Получение приглашаемого пользователя
+        const userToInvite = await userRepository.findOne({ where: { id: userIdToInvite } });
         if (!userToInvite) {
-            res.status(404).send("Пользователь не найден");
-            return
+            res.status(404).send("Приглашаемый пользователь не найден");
+            return;
         }
 
+        // Проверка роли пригласившего пользователя
         const inviterMembership = await companyMemberRepository.findOne({
             where: {
                 user: { id: inviterId },
-                role: UserRole.MANAGER,
+                role: In([UserRole.OWNER, UserRole.MANAGER]),
             },
-            relations: ['company'], //?
+            relations: ['company'],
         });
 
         if (!inviterMembership) {
-            res.status(403).send('Вы не являетесь менеджером ни в одной компании')
-            return
+            res.status(403).send('Вы не являетесь менеджером ни в одной компании');
+            return;
         }
 
-        const company = inviterMembership!.company //?
+        const company = inviterMembership.company;
 
+        // Проверка, является ли приглашенный пользователь уже членом компании
         const existingMember = await companyMemberRepository.findOne({
-            where: {id: userToInvite.id, company: company},
+            where: {
+                user: { id: userIdToInvite },
+                company: { company_id: company.company_id },
+            },
         });
 
         if (existingMember) {
-            res.status(409).send("Пользователь уже существует") //?
+            res.status(409).send("Пользователь уже является членом компании");
+            return;
         }
 
+        // Создание нового члена компании
         const newCompanyMember = new CompanyMember();
         newCompanyMember.company = company;
         newCompanyMember.user = userToInvite;
@@ -50,11 +63,11 @@ router.post('/invite', checkAuth, async (req, res) => {
 
         await companyMemberRepository.save(newCompanyMember);
 
-        res.json({message: "Пользователь приглашен"})
+        res.json({ message: "Пользователь успешно приглашен" });
     } catch (error) {
         console.error('Ошибка при отправке приглашения:', error);
         res.status(500).send("Внутренняя ошибка сервера");
     }
-})
+});
 
 export default router

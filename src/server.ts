@@ -15,6 +15,8 @@ import { Server } from 'socket.io';
 import * as http from "node:http";
 import resume from "./routes/resume";
 import avatar from "./routes/avatar";
+import company from "./routes/company";
+import details from "./routes/details";
 
 const app = express();
 const server = http.createServer(app);
@@ -48,12 +50,13 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/update', update);
 app.use(profile);
-app.use('/create', createCompany);
+app.use('/companies', company);
 app.use(invite)
 app.use(posting)
 app.use(application)
 app.use(job);
 app.use(resume)
+app.use(details)
 app.use('/api/uploads', avatar);
 app.use('/api/uploads', express.static('src/uploads'));
 

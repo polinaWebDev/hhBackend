@@ -6,7 +6,56 @@ import {Users} from "../entity/Users";
 
 const router = express.Router();
 
-router.post('/resume/:userId', checkAuth, async (req:any, res) => {
+router.put('/resume/update/:resumeId', checkAuth, async (req, res) => {
+    const resumeId  = +(req.params.resumeId)
+    const {data} = req.body;
+    console.log({resumeId})
+
+    try {
+        const resumeRepo = AppDataSource.getRepository(Resume);
+        const resumeToUpdate = await resumeRepo.findBy({ resume_id: resumeId });
+
+        if (resumeToUpdate.length > 0) {
+            const resume = resumeToUpdate[0];
+            resume.content = data;
+            await resumeRepo.save(resume);
+            res.status(200).json({ "resumeId": resumeId });
+            return;
+        } else {
+            res.status(404).json({message: "No resume found"});
+            return
+        }
+    } catch (error) {
+        console.log('Error during user registration:', error);
+        res.status(500).json('Internal Server Error')
+        return
+    }
+})
+
+router.get('/resume/user/:userId', checkAuth, async (req:any, res) => {
+    const {userId} = req.params;
+
+    try {
+        const resumeRepository = AppDataSource.getRepository(Resume);
+        const foundResumes = await resumeRepository.findBy({ userId: { id: userId } });
+
+        const resumes: Resume[] = foundResumes ? foundResumes : [];
+
+        if (resumes.length > 0) {
+            res.status(200).json({resumes});
+            return
+        } else {
+            res.status(404).json({message: 'No resume found'});
+            return
+        }
+    } catch (error) {
+        console.error('Error during user registration:', error);
+        res.status(500).send('Internal Server Error')
+        return
+    }
+})
+
+router.post('/resume/create/:userId', checkAuth, async (req:any, res) => {
     const { data } = req.body;
     const {userId} = req.params;
 
@@ -36,54 +85,9 @@ router.post('/resume/:userId', checkAuth, async (req:any, res) => {
     }
 })
 
-router.get('/resume/:userId', checkAuth, async (req:any, res) => {
-    const {userId} = req.params;
-
-    try {
-        const resumeRepository = AppDataSource.getRepository(Resume);
-        const foundResumes = await resumeRepository.findBy({ userId: { id: userId } });
-
-        const resumes: Resume[] = foundResumes ? foundResumes : [];
-
-        if (resumes.length > 0) {
-            res.status(200).json({resumes});
-            return
-        } else {
-            res.status(404).json({message: 'No resume found'});
-            return
-        }
-    } catch (error) {
-        console.error('Error during user registration:', error);
-        res.status(500).send('Internal Server Error')
-        return
-    }
-})
 
 
-router.put('/resume/:resumeId', checkAuth, async (req, res) => {
-    const { resumeId } = req.params;
-    const {data} = req.body;
 
-    try {
-        const resumeRepo = AppDataSource.getRepository(Resume);
-        const resumeToUpdate = await resumeRepo.findBy({ resume_id: resumeId });
-
-        if (resumeToUpdate.length > 0) {
-            const resume = resumeToUpdate[0];
-            resume.content = data;
-            await resumeRepo.save(resume);
-            res.status(200).json({ "resumeId": resumeId });
-            return;
-        } else {
-            res.status(404).json({message: "No resume found"});
-            return
-        }
-    } catch (error) {
-        console.log('Error during user registration:', error);
-        res.status(500).json('Internal Server Error')
-        return
-    }
-})
 
 export default router;
 

@@ -4,8 +4,8 @@ import {Users} from "./Users";
 
 @Entity()
 export class Resume {
-    @PrimaryGeneratedColumn('uuid')
-    resume_id: string;
+    @PrimaryGeneratedColumn()
+    resume_id: number;
 
     @Column()
     content: string

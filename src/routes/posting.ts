@@ -10,8 +10,9 @@ const router = express.Router();
 
 router.post('/post/jobs/:companyId', checkAuth, async (req:any, res) => {
     const userId = req.user.id;
-    const company_id = req.params.company_id;
+    const company_id = req.params.companyId;
     const {title, description, salary} = req.body;
+
 
     try {
         const companyMemberRepository =  AppDataSource.getRepository(CompanyMember);

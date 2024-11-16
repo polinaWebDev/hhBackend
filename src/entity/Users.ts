@@ -28,12 +28,6 @@ export class Users {
     @Column({nullable: true})
     avatar: string
 
-    @Column({
-        type: "enum",
-        enum: UserRole,
-        default: UserRole.USER
-    })
-    role: UserRole;
 
 
     @ManyToMany(() => Company, (company) => company.members)

@@ -43,7 +43,7 @@ router.put("/user/:id", checkAuth, async (req, res) => {
 });
 
 router.put('/company/:id', checkAuth, async (req:any, res) => {
-    const companyId = Number(req.params.id);
+    const companyId = req.params.id;
     const userId = req.user.id;
     const newName = req.body.name;
 

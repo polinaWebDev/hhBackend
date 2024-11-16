@@ -6,8 +6,8 @@ import path from 'path';
 
 const router = express.Router();
 
-const userUpload = multer({ dest: 'uploads/user_avatars/' });
-const companyUpload = multer({ dest: 'uploads/company_avatars/' });
+const userUpload = multer();
+const companyUpload = multer();
 
 router.post('/user/:userId/avatar', userUpload.single('avatar'), uploadUserAvatar);
 router.post('/company/:companyId/avatar', companyUpload.single('avatar'), uploadCompanyAvatar);

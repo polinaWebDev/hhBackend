@@ -77,7 +77,6 @@ router.put('/company/:id', checkAuth_1.checkAuth, (req, res) => __awaiter(void 0
         res.status(500);
     }
 }));
-exports.default = router;
 router.put('/job/:jobId', checkAuth_1.checkAuth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.user.id;
     const { jobId } = req.params;
@@ -118,3 +117,4 @@ router.put('/job/:jobId', checkAuth_1.checkAuth, (req, res) => __awaiter(void 0,
         res.status(500).send('Internal Server Error');
     }
 }));
+exports.default = router;

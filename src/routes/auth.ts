@@ -1,5 +1,5 @@
 import {Users} from "../entity/Users";
-import {Router} from "express";
+import {response, Router} from "express";
 import {AppDataSource} from "../data-source";
 import * as jwt from 'jsonwebtoken'
 
@@ -11,7 +11,6 @@ const userRepository =  AppDataSource.getRepository(Users);
 
 router.post('/register', async (req, res) => {
     const { email, password, name } = req.body;
-    console.log('Received data:', { email, password, name });
 
     try {
         const existingUser = await userRepository.findOneBy({ email });
@@ -25,7 +24,6 @@ router.post('/register', async (req, res) => {
         user.password = password;
         user.name = name;
 
-        console.log('Saving user to the database:', user);
 
         await userRepository.save(user);
         res.status(201).send("Users registered");
@@ -53,8 +51,9 @@ router.post('/login', async (req, res) => {
             return
         }
 
+
         const token = jwt.sign({ userId: user.id, email: user.email }, 'SECRET_KEY'); //?
-        res.json({token});
+        res.json({token, userId: user.id});
         return
     } catch (error) {
         res.status(500).send("Users already exists");
